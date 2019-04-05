@@ -24,7 +24,6 @@ def distance_down_range(v, h):
         vy = vy + (ay * DT)
         ax = ((-1 * D)/M) * vx * (((vx**2) + (vy**2))**0.5)
         ay = (((-1 * D)/M) * vy * (((vx**2) + (vy**2))**0.5)) - G
-        #print(str(vx) + "\t" + str(vy) + "\t" + str(ax) + "\t" + str(ay))
         x.append(x[i-1] + (vx * DT))
         y.append(y[i-1] + (vy * DT))
         i = i + 1
