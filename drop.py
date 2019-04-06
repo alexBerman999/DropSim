@@ -9,14 +9,14 @@ M = 0.267
 G = 9.81
 DT = 0.005
 
-def distance_down_range(v, h):
+def distance_down_range(v, h, tail_wind):
     x = [0]
     y = [h]
     theta = 0
     vx = v * numpy.cos(theta)
     vy = v * numpy.sin(theta)
     i = 1
-    ax = ((-1 * D)/M) * vx * (((vx**2) + (vy**2))**0.5)
+    ax = (D/M) * tail_wind**2 + ((-1 * D)/M) * vx * (((vx**2) + (vy**2))**0.5)
     ay = (((-1 * D)/M) * vy * (((vx**2) + (vy**2))**0.5)) - G
     time = 0
     while min(y) >= 0:
@@ -31,6 +31,7 @@ def distance_down_range(v, h):
     print(time)
     return [x, y]
 
-axis = distance_down_range(18, 45)
+axis = distance_down_range(18, 45, 3)
+print("X: " + str(axis[0][-1]) + "m\tY: " + str(axis[1][-1]) + "m")
 plt.plot(axis[0], axis[1])
 plt.show()
