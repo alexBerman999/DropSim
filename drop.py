@@ -34,4 +34,7 @@ def distance_down_range(v, h, tail_wind):
 axis = distance_down_range(18, 45, 3)
 print("X: " + str(axis[0][-1]) + "m\tY: " + str(axis[1][-1]) + "m")
 plt.plot(axis[0], axis[1])
+plt.xlabel("Down Range Distance (Meters)")
+plt.ylabel("Altitude (Meters)")
+plt.title("Drop Path")
 plt.show()
