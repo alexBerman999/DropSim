@@ -1,4 +1,4 @@
-import scipy, numpy
+import numpy
 import matplotlib.pyplot as plt
 
 CD = 0.5
