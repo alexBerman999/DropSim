@@ -38,7 +38,6 @@ def distance_down_range(v, h, tail_wind):
         y.append(y[i-1] + (vy * DT))
         i = i + 1
         time = time + DT
-    print(time)
     return [x, y]
 
 axis = distance_down_range(18, 45, 3)
