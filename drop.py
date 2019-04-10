@@ -1,5 +1,5 @@
 import numpy
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plot
 
 CD = 0.5
 RHO = 1.2
@@ -44,8 +44,8 @@ def distance_down_range(v, h, tail_wind):
 axis = distance_down_range(18, 45, 3)
 #Printing landing point
 print("X: " + str(axis[0][-1]) + "m\tY: " + str(axis[1][-1]) + "m")
-plt.plot(axis[0], axis[1])
-plt.xlabel("Down Range Distance (Meters)")
-plt.ylabel("Altitude (Meters)")
-plt.title("Drop Path")
-plt.show()
+plot.plot(axis[0], axis[1])
+plot.xlabel("Down Range Distance (Meters)")
+plot.ylabel("Altitude (Meters)")
+plot.title("Drop Path")
+plot.show()
