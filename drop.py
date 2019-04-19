@@ -1,6 +1,42 @@
 import numpy
 import matplotlib.pyplot as plot
 
+#Unit Conversions
+    """
+        Converts degrees latitude to meters. This conversion finds the east/west
+        distance in meters between the supplied point and origin. The Origin is
+        a list in the format [latitude, longitude]
+    """
+    def degreesLatToMeters(origin, degrees):
+        latR = math.radians(origin[0])
+        return (degrees - origin[0]) * (111132.954 - (559.822 * math.cos(2 * latR)) +	(1.175 * math.cos(4 * latR)) - (0.0023 * math.cos(6 * latR)))
+
+    """
+        Converts degrees longitude to meters. This conversion finds the
+        north/south distance in meters between the supplied point and origin.
+        The Origin is a list in the format [latitude, longitude]
+    """
+    def degreesLongToMeters(origin, degrees):
+        latR = math.radians(origin[0])
+        return (degrees - origin[1]) * (111132.954 * math.cos(latR))
+
+    """
+        Converts meters to degrees latitude. This conversion finds the point
+        meters to the east/west of the origin. The Origin is a list in the format [latitude, longitude]
+    """
+    def metersToDegreesLat(origin, meters):
+	    latR = math.radians(origin[0])
+	    return (meters / (111132.954 - (559.822 * math.cos(2 * latR)) + (1.175 * math.cos(4 * latR)) - (0.0023 * math.cos(6 * latR)))) + origin[0]
+
+    """
+        Converts meters to degrees longitude. This conversion finds the point
+        meters to the north/south of the origin. The Origin is a list in the format [latitude, longitude]
+    """
+    def metersToDegreesLong(origin, meters):
+        latR = math.radians(origin[0])
+        return (meters / (111132.954 * math.cos(latR))) + origin[1]
+
+
 CD = 0.5
 RHO = 1.2
 A = 0.37
