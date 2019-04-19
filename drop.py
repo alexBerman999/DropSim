@@ -77,20 +77,45 @@ def distance_down_range(v, h, tail_wind):
         time = time + DT
     return [x, y]
 
-target = [float(sys.argv[1]), float(sys.argv[2])]
-wind_direction = float(sys.argv[3])
-wind_speed = float(sys.argv[4])
+if len(sys.argv) == 2:
+    if sys.argv[1] == "-h" or sys.argv[1] == "help":
+        print("""\tpython3 drop.py float target_latitude float target_longitude
+\tfloat wind_direction float wind_speed Latitude and longitude
+\tare in degrees North East (meaning west and south are
+\trepresented by negative numbers). Wind direction is provided
+\tin degrees with North as 0 degrees. Wind speed is provided in
+\tmeters per second. The returned values are the degrees latitude
+\tand degrees longitude the payload is to be dropped at to land
+\tat the target coordinate.""")
+    elif sys.argv[1] == "-a":
+        print("""\tAssumptions:
+\t\tCoefficient of Drag = {}
+\t\tDensity = {}kg/m^2
+\t\tArea = {}m^2
+\t\tMass = {}kg
+\t\tGravity = {}m/s^2
+\t\tTime Step = {}s
+\t\tInitial Airspeed = {}m/s
+\t\tInitial Height = {}m""".format(CD, RHO, A, M, G, DT, 18, 45))
 
-axis = distance_down_range(18, 45, wind_speed)
-distance = axis[0][-1]
-drop_point = [0, 0]
-drop_point[0] -= distance * numpy.cos(numpy.deg2rad(wind_direction))
-drop_point[1] -= distance * numpy.sin(numpy.deg2rad(wind_direction))
-drop_coords = [metersToDegreesLat(target, drop_point[1]), metersToDegreesLong(target, drop_point[0])]
-print(str(drop_coords[0]) + " " + str(drop_coords[1]))
+elif len(sys.argv) != 5:
+    print("Invalid number of arguments. " + str(len(sys.argv) - 1) + " provided\
+    when 4 were required")
+else:
+    target = [float(sys.argv[1]), float(sys.argv[2])]
+    wind_direction = float(sys.argv[3])
+    wind_speed = float(sys.argv[4])
 
-plot.plot(axis[0], axis[1])
-plot.xlabel("Down Range Distance (Meters)")
-plot.ylabel("Altitude (Meters)")
-plot.title("Drop Path")
-plot.show()
+    axis = distance_down_range(18, 45, wind_speed)
+    distance = axis[0][-1]
+    drop_point = [0, 0]
+    drop_point[0] -= distance * numpy.cos(numpy.deg2rad(wind_direction))
+    drop_point[1] -= distance * numpy.sin(numpy.deg2rad(wind_direction))
+    drop_coords = [metersToDegreesLat(target, drop_point[1]), metersToDegreesLong(target, drop_point[0])]
+    print(str(drop_coords[0]) + " " + str(drop_coords[1]))
+
+    plot.plot(axis[0], axis[1])
+    plot.xlabel("Down Range Distance (Meters)")
+    plot.ylabel("Altitude (Meters)")
+    plot.title("Drop Path")
+    plot.show()
