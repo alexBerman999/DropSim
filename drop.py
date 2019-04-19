@@ -46,6 +46,9 @@ M = 0.267
 G = 9.81
 DT = 0.005
 
+INITIAL_SPEED = 18
+INITIAL_HEIGHT = 45
+
 """
     Calculates the down-range distance in meters
     of an object described by the above parameters
@@ -96,7 +99,7 @@ if len(sys.argv) == 2:
 \t\tGravity = {}m/s^2
 \t\tTime Step = {}s
 \t\tInitial Airspeed = {}m/s
-\t\tInitial Height = {}m""".format(CD, RHO, A, M, G, DT, 18, 45))
+\t\tInitial Height = {}m""".format(CD, RHO, A, M, G, DT, INITIAL_SPEED, INITIAL_HEIGHT))
 
 elif len(sys.argv) != 5:
     print("Invalid number of arguments. " + str(len(sys.argv) - 1) + " provided\
@@ -106,7 +109,7 @@ else:
     wind_direction = float(sys.argv[3])
     wind_speed = float(sys.argv[4])
 
-    axis = distance_down_range(18, 45, wind_speed)
+    axis = distance_down_range(INITIAL_SPEED, INITIAL_HEIGHT, wind_speed)
     distance = axis[0][-1]
     drop_point = [0, 0]
     drop_point[0] -= distance * numpy.cos(numpy.deg2rad(wind_direction))
