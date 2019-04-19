@@ -1,40 +1,41 @@
+import sys
 import numpy
 import matplotlib.pyplot as plot
 
 #Unit Conversions
-    """
-        Converts degrees latitude to meters. This conversion finds the east/west
-        distance in meters between the supplied point and origin. The Origin is
-        a list in the format [latitude, longitude]
-    """
-    def degreesLatToMeters(origin, degrees):
-        latR = math.radians(origin[0])
-        return (degrees - origin[0]) * (111132.954 - (559.822 * math.cos(2 * latR)) +	(1.175 * math.cos(4 * latR)) - (0.0023 * math.cos(6 * latR)))
+"""
+    Converts degrees latitude to meters. This conversion finds the east/west
+    distance in meters between the supplied point and origin. The Origin is
+    a list in the format [latitude, longitude]
+"""
+def degreesLatToMeters(origin, degrees):
+    latR = numpy.deg2rad(origin[0])
+    return (degrees - origin[0]) * (111132.954 - (559.822 * numpy.cos(2 * latR)) +	(1.175 * numpy.cos(4 * latR)) - (0.0023 * numpy.cos(6 * latR)))
 
-    """
-        Converts degrees longitude to meters. This conversion finds the
-        north/south distance in meters between the supplied point and origin.
-        The Origin is a list in the format [latitude, longitude]
-    """
-    def degreesLongToMeters(origin, degrees):
-        latR = math.radians(origin[0])
-        return (degrees - origin[1]) * (111132.954 * math.cos(latR))
+"""
+    Converts degrees longitude to meters. This conversion finds the
+    north/south distance in meters between the supplied point and origin.
+    The Origin is a list in the format [latitude, longitude]
+"""
+def degreesLongToMeters(origin, degrees):
+    latR = numpy.deg2rad(origin[0])
+    return (degrees - origin[1]) * (111132.954 * numpy.cos(latR))
 
-    """
-        Converts meters to degrees latitude. This conversion finds the point
-        meters to the east/west of the origin. The Origin is a list in the format [latitude, longitude]
-    """
-    def metersToDegreesLat(origin, meters):
-	    latR = math.radians(origin[0])
-	    return (meters / (111132.954 - (559.822 * math.cos(2 * latR)) + (1.175 * math.cos(4 * latR)) - (0.0023 * math.cos(6 * latR)))) + origin[0]
+"""
+    Converts meters to degrees latitude. This conversion finds the point
+    meters to the east/west of the origin. The Origin is a list in the format [latitude, longitude]
+"""
+def metersToDegreesLat(origin, meters):
+    latR = numpy.deg2rad(origin[0])
+    return (meters / (111132.954 - (559.822 * numpy.cos(2 * latR)) + (1.175 * numpy.cos(4 * latR)) - (0.0023 * numpy.cos(6 * latR)))) + origin[0]
 
-    """
-        Converts meters to degrees longitude. This conversion finds the point
-        meters to the north/south of the origin. The Origin is a list in the format [latitude, longitude]
-    """
-    def metersToDegreesLong(origin, meters):
-        latR = math.radians(origin[0])
-        return (meters / (111132.954 * math.cos(latR))) + origin[1]
+"""
+    Converts meters to degrees longitude. This conversion finds the point
+    meters to the north/south of the origin. The Origin is a list in the format [latitude, longitude]
+"""
+def metersToDegreesLong(origin, meters):
+    latR = numpy.deg2rad(origin[0])
+    return (meters / (111132.954 * numpy.cos(latR))) + origin[1]
 
 
 CD = 0.5
@@ -76,9 +77,18 @@ def distance_down_range(v, h, tail_wind):
         time = time + DT
     return [x, y]
 
-axis = distance_down_range(18, 45, 3)
-#Printing landing point
-print("X: " + str(axis[0][-1]) + "m\tY: " + str(axis[1][-1]) + "m")
+target = [float(sys.argv[1]), float(sys.argv[2])]
+wind_direction = float(sys.argv[3])
+wind_speed = float(sys.argv[4])
+
+axis = distance_down_range(18, 45, wind_speed)
+distance = axis[0][-1]
+drop_point = [0, 0]
+drop_point[0] -= distance * numpy.cos(numpy.deg2rad(wind_direction))
+drop_point[1] -= distance * numpy.sin(numpy.deg2rad(wind_direction))
+drop_coords = [metersToDegreesLat(target, drop_point[1]), metersToDegreesLong(target, drop_point[0])]
+print(str(drop_coords[0]) + " " + str(drop_coords[1]))
+
 plot.plot(axis[0], axis[1])
 plot.xlabel("Down Range Distance (Meters)")
 plot.ylabel("Altitude (Meters)")
