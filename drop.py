@@ -109,7 +109,7 @@ if len(sys.argv) == 2:
 \t\t-a: Assumptions
 \t\t-h: Help
 \t\thelp: see -h
-\t\t-g: graph""")
+\t\t-g: Graph""")
 
 #Assumptions
     elif sys.argv[1] == "-a":
