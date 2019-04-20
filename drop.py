@@ -97,14 +97,19 @@ def drop_coordinates(target, distance, wind_direction, wind_speed):
 #Help
 if len(sys.argv) == 2:
     if sys.argv[1] == "-h" or sys.argv[1] == "help":
-        print("""\tpython3 drop.py target_latitude target_longitude wind_direction wind_speed
+        print("""\tpython3 drop.py (-g) target_latitude target_longitude wind_direction wind_speed
 
 \tLatitude and longitude are in degrees North East (meaning west
 \tand south are represented by negative numbers). Wind direction
 \tis provided in degrees with North as 0 degrees. Wind speed is
 \tprovided in meters per second. The returned values are the degrees
 \tlatitude and degrees longitude the payload is to be dropped at to
-\tland at the target coordinate.""")
+\tland at the target coordinate.
+\tFlags:
+\t\t-a: Assumptions
+\t\t-h: Help
+\t\thelp: see -h
+\t\t-g: graph""")
 
 #Assumptions
     elif sys.argv[1] == "-a":
