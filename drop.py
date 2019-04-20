@@ -2,6 +2,9 @@ import sys
 import numpy
 import matplotlib.pyplot as plot
 
+#Graph output flag
+axis = [[],[]]
+
 #Unit Conversions
 """
     Converts degrees latitude to meters. This conversion finds the east/west
@@ -50,15 +53,14 @@ INITIAL_SPEED = 18
 INITIAL_HEIGHT = 45
 
 """
-    Calculates the down-range distance in meters
-    of an object described by the above parameters
-    traveling at velocity v (m/s), at height h (m) in
-    an environment with tail wind tail_wind (m/s). This
-    will not account for crosswinds and assumes a constant
-    windspeed. It is further assumed the object is travelling
-    horizontally.
+    Calculates the path of an object described by the
+    above parameters traveling at velocity v (m/s), at
+    height h (m) in an environment with tail wind tail_wind
+    (m/s). This will not account for crosswinds and assumes
+    a constant windspeed. It is further assumed the object
+    is travelling horizontally.
 """
-def distance_down_range(v, h, tail_wind):
+def drop_path(v, h, tail_wind):
     x = [0]
     y = [h]
     #This assumes the object is travelling horizontally.
@@ -80,10 +82,16 @@ def distance_down_range(v, h, tail_wind):
         time = time + DT
     return [x, y]
 
+def drop_coordinates(distance, wind_direction, wind_speed):
+    drop_point = [0, 0]
+    drop_point[0] -= distance * numpy.cos(numpy.deg2rad(wind_direction))
+    drop_point[1] -= distance * numpy.sin(numpy.deg2rad(wind_direction))
+    return [metersToDegreesLat(target, drop_point[1]), metersToDegreesLong(target, drop_point[0])]
+
 if len(sys.argv) == 2:
     if sys.argv[1] == "-h" or sys.argv[1] == "help":
         print("""\tpython3 drop.py target_latitude target_longitude wind_direction wind_speed
-        
+
 \tLatitude and longitude are in degrees North East (meaning west
 \tand south are represented by negative numbers). Wind direction
 \tis provided in degrees with North as 0 degrees. Wind speed is
@@ -101,24 +109,33 @@ if len(sys.argv) == 2:
 \t\tInitial Airspeed = {}m/s
 \t\tInitial Height = {}m""".format(CD, RHO, A, M, G, DT, INITIAL_SPEED, INITIAL_HEIGHT))
 
-elif len(sys.argv) != 5:
+elif len(sys.argv) == 6 and sys.argv[1] != "-g":
+    print("Invalid flag: " + sys.argv[1])
+
+elif len(sys.argv) != 5 and len(sys.argv) != 6:
     print("Invalid number of arguments. " + str(len(sys.argv) - 1) + " provided\
     when 4 were required")
+
 else:
-    target = [float(sys.argv[1]), float(sys.argv[2])]
-    wind_direction = float(sys.argv[3])
-    wind_speed = float(sys.argv[4])
+    arg_offset = 1
+    graph = False
+    if sys.argv[1] == "-g":
+        graph = True
+        arg_offset += 1
 
-    axis = distance_down_range(INITIAL_SPEED, INITIAL_HEIGHT, wind_speed)
-    distance = axis[0][-1]
-    drop_point = [0, 0]
-    drop_point[0] -= distance * numpy.cos(numpy.deg2rad(wind_direction))
-    drop_point[1] -= distance * numpy.sin(numpy.deg2rad(wind_direction))
-    drop_coords = [metersToDegreesLat(target, drop_point[1]), metersToDegreesLong(target, drop_point[0])]
-    print(str(drop_coords[0]) + " " + str(drop_coords[1]))
+    target = [float(sys.argv[0 + arg_offset]), float(sys.argv[1 + arg_offset])]
+    wind_direction = float(sys.argv[2 + arg_offset])
+    wind_speed = float(sys.argv[3 + arg_offset])
 
-    plot.plot(axis[0], axis[1])
-    plot.xlabel("Down Range Distance (Meters)")
-    plot.ylabel("Altitude (Meters)")
-    plot.title("Drop Path")
-    plot.show()
+    path = drop_path(INITIAL_SPEED, INITIAL_HEIGHT, wind_speed)
+    distance = path[0][-1]
+
+    dc = drop_coordinates(distance, wind_direction, wind_speed)
+    print(str(dc[0]) + " " + str(dc[1]))
+
+    if graph:
+        plot.plot(path[0], path[1])
+        plot.xlabel("Down Range Distance (Meters)")
+        plot.ylabel("Altitude (Meters)")
+        plot.title("Drop Path")
+        plot.show()
