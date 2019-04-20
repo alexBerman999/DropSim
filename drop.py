@@ -82,12 +82,19 @@ def drop_path(v, h, tail_wind):
         time = time + DT
     return [x, y]
 
-def drop_coordinates(distance, wind_direction, wind_speed):
+"""
+    Calculates an objects start coordinates if it traveled from
+    distance meters from the latitude and longitude given by target.
+    The target position is supplied in the format [latitude, longitude].
+    wind_direction is given in degrees with 0 being north.
+"""
+def drop_coordinates(target, distance, wind_direction, wind_speed):
     drop_point = [0, 0]
     drop_point[0] -= distance * numpy.cos(numpy.deg2rad(wind_direction))
     drop_point[1] -= distance * numpy.sin(numpy.deg2rad(wind_direction))
     return [metersToDegreesLat(target, drop_point[1]), metersToDegreesLong(target, drop_point[0])]
 
+#Help
 if len(sys.argv) == 2:
     if sys.argv[1] == "-h" or sys.argv[1] == "help":
         print("""\tpython3 drop.py target_latitude target_longitude wind_direction wind_speed
@@ -98,6 +105,8 @@ if len(sys.argv) == 2:
 \tprovided in meters per second. The returned values are the degrees
 \tlatitude and degrees longitude the payload is to be dropped at to
 \tland at the target coordinate.""")
+
+#Assumptions
     elif sys.argv[1] == "-a":
         print("""\tAssumptions:
 \t\tCoefficient of Drag = {}
@@ -109,13 +118,16 @@ if len(sys.argv) == 2:
 \t\tInitial Airspeed = {}m/s
 \t\tInitial Height = {}m""".format(CD, RHO, A, M, G, DT, INITIAL_SPEED, INITIAL_HEIGHT))
 
+#6 args but not graph flag
 elif len(sys.argv) == 6 and sys.argv[1] != "-g":
     print("Invalid flag: " + sys.argv[1])
 
+#Incorrect number of arguments
 elif len(sys.argv) != 5 and len(sys.argv) != 6:
     print("Invalid number of arguments. " + str(len(sys.argv) - 1) + " provided\
     when 4 were required")
 
+#Correct input for calculation
 else:
     arg_offset = 1
     graph = False
@@ -130,7 +142,7 @@ else:
     path = drop_path(INITIAL_SPEED, INITIAL_HEIGHT, wind_speed)
     distance = path[0][-1]
 
-    dc = drop_coordinates(distance, wind_direction, wind_speed)
+    dc = drop_coordinates(target, distance, wind_direction, wind_speed)
     print(str(dc[0]) + " " + str(dc[1]))
 
     if graph:
